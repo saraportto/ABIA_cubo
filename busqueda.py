@@ -133,30 +133,11 @@ class BusquedaVoraz(Busqueda):
     
     @staticmethod
     def distancia(cubo, a, b):
-        # Definir una matriz de distancias inicializada con ceros
-        distancias = [[0 for _ in range(54)] for _ in range(54)]
-
-        # Definir las coordenadas de las casillas en el cubo de Rubik estándar
-        coordenadas = [
-            (0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7), (0, 8),
-            (1, 0), (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8),
-            (2, 0), (2, 1), (2, 2), (2, 3), (2, 4), (2, 5), (2, 6), (2, 7), (2, 8),
-            (3, 0), (3, 1), (3, 2), (3, 3), (3, 4), (3, 5), (3, 6), (3, 7), (3, 8),
-            (4, 0), (4, 1), (4, 2), (4, 3), (4, 4), (4, 5), (4, 6), (4, 7), (4, 8),
-            (5, 0), (5, 1), (5, 2), (5, 3), (5, 4), (5, 5), (5, 6), (5, 7), (5, 8),
+        cordenadas = [
+            (0, 0), (0, 1), (0, 2),
+            (1, 0), (1, 1), (1, 2),
+            (2, 0), (2, 1), (2, 2),
         ]
-
-        # Calcular las distancias de Manhattan entre todas las casillas
-        for i in range(54):
-            for j in range(54):
-                x1, y1 = coordenadas[i]
-                x2, y2 = coordenadas[j]
-                distancia = abs(x1 - x2) + abs(y1 - y2)
-                distancias[i][j] = distancia
-
-        # Imprimir la matriz de distancias (solo un ejemplo, puedes adaptar cómo se imprime según tu necesidad)
-        for fila in distancias:
-            print(fila)
         
     def buscarSolucion(self, inicial):
         nodoActual = None
