@@ -8,7 +8,7 @@ from cubo import *
 class EstadoRubik(Estado):
 
     def __init__(self, cubo):
-        
+                
         self.listaOperadoresAplicables=[]
         for m in Cubo.movimientosPosibles:
             self.listaOperadoresAplicables.append(OperadorRubik(m))
