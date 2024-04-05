@@ -125,32 +125,42 @@ class BusquedaProfundidadIterativa(Busqueda):
         
 
 class BusquedaVoraz(Busqueda):
+    cara_opuesta = {
+        0: 5,
+        1: 3,
+        2: 4,
+        3: 1,
+        4: 2,
+        5: 0
+    }
+
 
     @staticmethod
-    def heuristica(cubo):
+    def heuristica(cubo) -> int:
         distancia = 0
-        
+
         for num_cara, cara in enumerate(cubo.caras):
             for num_casilla, casilla in enumerate(cara.casillas):
-                distancia += BusquedaVoraz.distancia(casilla, (num_cara, num_casilla), casilla.posicionAbsCorrecta)
-                
+                distancia += BusquedaVoraz.distancia(casilla, (num_cara, num_casilla))
+    
         return distancia  # Devuelve la distancia total calculada
     
     @staticmethod
-    def distancia(casilla, a, b):
-        coordenadas = [
-            (0, 0), (0, 1), (0, 2),
-            (1, 0), (1, 1), (1, 2),
-            (2, 0), (2, 1), (2, 2),
-        ]
-        x_actual, y_actual = coordenadas[a[0] * 3 + a[1]]  # Calcular el índice de la posición actual
-        x_correcta, y_correcta = coordenadas[b[0] * 3 + b[1]]  # Calcular el índice de la posición correcta
+    def distancia(casilla, pos_actual) -> int:
+        if pos_actual[1] != casilla.posicionCorrecta and pos_actual[1] != 8:
+            dist_cara = 2  # Si la posición actual no es la correcta
+        else:
+            dist_cara = 0  # Si la posición actual es la correcta o el centro
 
-        dist_cara = abs(x_actual - x_correcta) + abs(y_actual - y_correcta)
-        
-        color_actual = a[0]  # No está claro cómo se usa esta variable en este contexto
-        
-        return dist_cara  # Devuelve la distancia calculada
+        if pos_actual[0] != casilla.color:
+            if pos_actual[0] == BusquedaVoraz.cara_opuesta[casilla.color]:
+                dist_color = 6  # Si el color actual es el opuesto
+            else:
+                dist_color = 3  # Si el color actual no es el correcto ni el opuesto
+        else:
+            dist_color = 0
+
+        return dist_cara + dist_color  # Devuelve la distancia calculada
 
     def buscarSolucion(self, inicial):
         nodoActual = None
@@ -163,7 +173,7 @@ class BusquedaVoraz(Busqueda):
         
         while not solucion and len(abiertos) > 0:
             # Ordenar la lista de abiertos según la heurística
-            abiertos.sort(key=lambda x: self.heuristica(x.estado))
+            abiertos.sort(key=lambda x: self.heuristica(x.estado.cubo))
             nodoActual = abiertos.pop(0)
             actual = nodoActual.estado
 

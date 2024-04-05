@@ -28,7 +28,6 @@ class Casilla:
     def __init__(self, color, pos):
         self.color=color
         self.posicionCorrecta=pos
-        self.posicionAbsCorrecta = (0, 0)
 
 
 
