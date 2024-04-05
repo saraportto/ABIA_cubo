@@ -33,3 +33,15 @@ def calc_distancia(casilla, pos_actual) -> int:
         dist_color = 0
 
     return dist_cara + dist_color  # Devuelve la distancia calculada
+
+
+def heuristica_simple(cubo) -> int:
+    distancia = 0
+
+    for num_cara, cara in enumerate(cubo.caras):
+        for num_casilla, casilla in enumerate(cara.casillas):
+            if num_casilla != 8:
+                if num_cara != casilla.color:
+                    distancia += 1  # Solo tiene en cuenta la cara porque es muy optimista
+
+    return distancia  # Devuelve la distancia total calculada

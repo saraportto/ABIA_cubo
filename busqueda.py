@@ -161,6 +161,43 @@ class BusquedaVoraz(Busqueda):
             return None
 
 
+
+class BusquedaVoraz_simple(Busqueda):
+    def buscarSolucion(self, inicial):
+        nodoActual = None
+        actual, hijo = None, None
+        solucion = False
+        abiertos = []
+        cerrados = dict()
+        abiertos.append(NodoAnchura(inicial, None, None))
+        cerrados[inicial.cubo.visualizar()] = inicial
+        
+        while not solucion and len(abiertos) > 0:
+            # Ordenar la lista de abiertos según la heurística
+            abiertos.sort(key=lambda x: heuristica_simple(x.estado.cubo))
+            nodoActual = abiertos.pop(0)
+            actual = nodoActual.estado
+
+            if actual.esFinal():
+                solucion = True
+            
+            else:
+                for operador in actual.operadoresAplicables():
+                    hijo = actual.aplicarOperador(operador)
+                    if hijo.cubo.visualizar() not in cerrados.keys():
+                        abiertos.append(NodoAnchura(hijo, nodoActual, operador))
+                        cerrados[hijo.cubo.visualizar()] = hijo
+        if solucion:
+            lista = []
+            nodo = nodoActual
+            while nodo.padre is not None: # Asciende hasta la raíz
+                lista.insert(0, nodo.operador)
+                nodo = nodo.padre
+            return lista
+        else:
+            return None
+
+
 class BusquedaAEstrella(Busqueda):
     
     def buscarSolucion(self, inicial):
@@ -203,3 +240,46 @@ class BusquedaAEstrella(Busqueda):
         else:
             return None
         
+
+class BusquedaIDA(Busqueda):
+    
+    def buscarSolucion(self, inicial):
+        nodoActual = None
+        actual, hijo = None, None
+        solucion = False
+        nueva_cota = heuristica(inicial.cubo)
+
+        while not solucion:
+            cota = nueva_cota
+            nueva_cota = float('inf')
+            abiertos = []
+            abiertos.append(NodoAEstrella(inicial, None, None, 0, heuristica(inicial.cubo)))
+
+            while not solucion and len(abiertos) > 0:
+                abiertos.sort(key=lambda x: x.coste_f)
+                nodoActual = abiertos.pop(0)
+                actual = nodoActual.estado
+
+                if actual.esFinal():
+                    solucion = True
+                else:
+                    for operador in actual.operadoresAplicables():
+                        hijo = actual.aplicarOperador(operador)
+                        sucesor_g = nodoActual.coste_g + 1
+                        sucesor_f = sucesor_g + heuristica(hijo.cubo)
+                        
+                        if sucesor_f <= cota:
+                            nuevoNodoSucesor = NodoAEstrella(hijo, nodoActual, operador, sucesor_g, sucesor_f)
+                            abiertos.append(nuevoNodoSucesor)
+                        else:
+                            nueva_cota = min(nueva_cota, sucesor_f)
+
+        if solucion:
+            lista = []
+            nodo = nodoActual
+            while nodo.padre is not None:  # Asciende hasta la raíz
+                lista.insert(0, nodo.operador)
+                nodo = nodo.padre
+            return lista
+        else:
+            return None
