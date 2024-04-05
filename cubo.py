@@ -1,4 +1,4 @@
-
+from color import Color
 from random import *
 
 seed(76)
@@ -28,6 +28,7 @@ class Casilla:
     def __init__(self, color, pos):
         self.color=color
         self.posicionCorrecta=pos
+        self.posicionAbsCorrecta = (0, 0)
 
 
 
@@ -83,7 +84,12 @@ class Cubo:
     ids_colores = [0, 1, 2, 3, 4, 5]
 
     #lista de etiquetas para identificar los colores
-    etq_colores = ["W", "B", "O", "G", "R", "Y"]
+    etq_colores = [Color.WHITE + "W" + Color.RESET, 
+                   Color.BLUE + "B" + Color.RESET, 
+                   Color.ORANGE + "O" + Color.RESET, 
+                   Color.GREEN + "G" + Color.RESET,
+                   Color.RED + "R" + Color.RESET, 
+                   Color.YELLOW + "Y" + Color.RESET]
 
     #Indices de la cara vecina Norte de cada una de las caras
     vecinoNorte = [4, 0, 0, 0, 0, 2]
@@ -319,14 +325,14 @@ class Cubo:
         return resultado
 
     def  stringFila1(self,cara):
-        return self.etq_colores[cara.casillas[0].color] + str(cara.casillas[0].posicionCorrecta) + self.etq_colores[cara.casillas[1].color] + str(cara.casillas[1].posicionCorrecta) + self.etq_colores[cara.casillas[2].color] + str(cara.casillas[2].posicionCorrecta)
+        return self.etq_colores[cara.casillas[0].color] + self.etq_colores[cara.casillas[1].color] + self.etq_colores[cara.casillas[2].color]
 
 
     def  stringFila2(self,cara):
-        return self.etq_colores[cara.casillas[7].color] + str(cara.casillas[7].posicionCorrecta) + self.etq_colores[cara.casillas[8].color] + str(cara.casillas[8].posicionCorrecta) + self.etq_colores[cara.casillas[3].color] + str(cara.casillas[3].posicionCorrecta)
+        return self.etq_colores[cara.casillas[7].color] + self.etq_colores[cara.casillas[8].color] + self.etq_colores[cara.casillas[3].color]
 
     def  stringFila3(self,cara):
-        return self.etq_colores[cara.casillas[6].color] + str(cara.casillas[6].posicionCorrecta) + self.etq_colores[cara.casillas[5].color] + str(cara.casillas[5].posicionCorrecta) + self.etq_colores[cara.casillas[4].color] + str(cara.casillas[4].posicionCorrecta)
+        return self.etq_colores[cara.casillas[6].color] + self.etq_colores[cara.casillas[5].color] + self.etq_colores[cara.casillas[4].color]
 
 
 
