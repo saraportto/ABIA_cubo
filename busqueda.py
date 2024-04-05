@@ -159,3 +159,47 @@ class BusquedaVoraz(Busqueda):
             return lista
         else:
             return None
+
+
+class BusquedaAEstrella(Busqueda):
+    
+    def buscarSolucion(self, inicial):
+        nodoActual = None
+        actual, hijo = None, None
+        solucion = False
+        abiertos = []
+        cerrados = dict()
+        abiertos.append(NodoAEstrella(inicial, None, None, 0, heuristica(inicial.cubo)))
+        cerrados[inicial.cubo.visualizar()] = inicial
+
+        while not solucion and len(abiertos) > 0:
+            # Ordenar la lista de abiertos según la heurística
+            abiertos.sort(key=lambda x: x.coste_f)
+            nodoActual = abiertos.pop(0)
+            actual = nodoActual.estado
+
+            if actual.esFinal():
+                solucion = True
+            
+            else:
+                for operador in actual.operadoresAplicables():
+                    hijo = actual.aplicarOperador(operador)
+                    if hijo.cubo.visualizar() not in cerrados.keys():
+                        sucesor_g = nodoActual.coste_g + 1
+                        sucesor_f = sucesor_g + heuristica(hijo.cubo)
+
+                        nuevoNodoSucesor = NodoAEstrella(hijo, nodoActual, operador, sucesor_g, sucesor_f)
+                        
+                        abiertos.append(nuevoNodoSucesor)
+                        cerrados[hijo.cubo.visualizar()] = hijo
+
+        if solucion:
+            lista = []
+            nodo = nodoActual
+            while nodo.padre is not None:  # Asciende hasta la raíz
+                lista.insert(0, nodo.operador)
+                nodo = nodo.padre
+            return lista
+        else:
+            return None
+        

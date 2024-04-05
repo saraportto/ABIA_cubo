@@ -31,8 +31,8 @@ print("CUBO INICIAL (MEZCLADO):\n" + cubo.visualizar())
 
 # Descomentar una vez se implemente la búsqueda en anchura
 # Creación de un problema
-problema = Problema(EstadoRubik(cubo), BusquedaVoraz())
-
+# problema = Problema(EstadoRubik(cubo), BusquedaVoraz())
+problema = Problema(EstadoRubik(cubo), BusquedaAEstrella())
 
 print("SOLUCION:")
 opsSolucion = problema.obtenerSolucion()

@@ -23,3 +23,11 @@ class NodoProfundidad(Nodo):
         super().__init__(estado, padre)
         self.operador = operador
         self.profundidad = profundidad
+
+
+class NodoAEstrella(Nodo):
+    def __init__(self, estado, padre, operador, coste_g, coste_f):
+        super().__init__(estado, padre)
+        self.operador = operador
+        self.coste_g = coste_g
+        self.coste_f = coste_f
