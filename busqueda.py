@@ -110,7 +110,7 @@ class BusquedaProfundidadIterativa(Busqueda): # Implementa la búsqueda en profu
                         if hijo.cubo.visualizar() not in cerrados.keys() and hijo.cubo.visualizar() not in abiertos:
                             abiertos.insert(0, NodoProfundidad(hijo, nodoActual, operador, nodoActual.profundidad + 1))
                             cerrados[hijo.cubo.visualizar()] = hijo #utilizamos CERRADOS para mantener también traza de los nodos añadidos a ABIERTOS 
-                            print(profundidad_maxima)
+                            # print(profundidad_maxima)
                             profundidad_maxima +=1
         if solucion:
             lista = []
