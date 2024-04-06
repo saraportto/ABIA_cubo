@@ -14,9 +14,8 @@ class Busqueda(metaclass=ABCMeta):
 
 
 
-#Implementa una búsqueda en Anchura genérica (independiente de Estados y Operadores) controlando repetición de estados.
-#Usa lista ABIERTOS (lista) y lista CERRADOS (diccionario usando Estado como clave)
-class BusquedaAnchura(Busqueda):
+### BÚSQUEDAS NO INFORMADAS
+class BusquedaAnchura(Busqueda): #Implementa la búsqueda en anchura
     
     #Implementa la búsqueda en anchura. Si encuentra solución recupera la lista de Operadores empleados almacenada en los atributos de los objetos NodoAnchura
     def buscarSolucion(self,inicial):
@@ -51,9 +50,8 @@ class BusquedaAnchura(Busqueda):
 
 
 
-class BusquedaProfundidad(Busqueda):
+class BusquedaProfundidad(Busqueda): # Implementa la búsqueda en profundidad
     
-    #Implementa la búsqueda en anchura. Si encuentra solución recupera la lista de Operadores empleados almacenada en los atributos de los objetos NodoAnchura
     def buscarSolucion(self,inicial):
         nodoActual = None
         actual, hijo = None, None
@@ -86,7 +84,7 @@ class BusquedaProfundidad(Busqueda):
 
 
 
-class BusquedaProfundidadIterativa(Busqueda):
+class BusquedaProfundidadIterativa(Busqueda): # Implementa la búsqueda en profundidad con cota iterativa
 
     def buscarSolucion(self,inicial):
         nodoActual = None
@@ -125,7 +123,9 @@ class BusquedaProfundidadIterativa(Busqueda):
             return None
         
 
-class BusquedaVoraz(Busqueda):
+
+### BÚSQUEDAS INFORMADAS
+class BusquedaVoraz_manhattan(Busqueda): # Implementa la búsqueda voraz usando la heurística de Manhattan
     def buscarSolucion(self, inicial):
         nodoActual = None
         actual, hijo = None, None
@@ -137,7 +137,7 @@ class BusquedaVoraz(Busqueda):
         
         while not solucion and len(abiertos) > 0:
             # Ordenar la lista de abiertos según la heurística
-            abiertos.sort(key=lambda x: heuristica(x.estado.cubo))
+            abiertos.sort(key=lambda x: heuristica_manhattan(x.estado.cubo))
             nodoActual = abiertos.pop(0)
             actual = nodoActual.estado
 
@@ -162,7 +162,7 @@ class BusquedaVoraz(Busqueda):
 
 
 
-class BusquedaVoraz_simple(Busqueda):
+class BusquedaVoraz_comprueba_cara(Busqueda): # Implementa la búsqueda voraz usando la heurística del nº de caras en la casilla correcta
     def buscarSolucion(self, inicial):
         nodoActual = None
         actual, hijo = None, None
@@ -174,7 +174,7 @@ class BusquedaVoraz_simple(Busqueda):
         
         while not solucion and len(abiertos) > 0:
             # Ordenar la lista de abiertos según la heurística
-            abiertos.sort(key=lambda x: heuristica_simple(x.estado.cubo))
+            abiertos.sort(key=lambda x: heuristica_comprueba_cara(x.estado.cubo))
             nodoActual = abiertos.pop(0)
             actual = nodoActual.estado
 
@@ -198,7 +198,7 @@ class BusquedaVoraz_simple(Busqueda):
             return None
 
 
-class BusquedaAEstrella(Busqueda):
+class BusquedaAEstrella_manhattan(Busqueda): # Implementa la búsqueda A* usando la heurística de Manhattan
     
     def buscarSolucion(self, inicial):
         nodoActual = None
@@ -206,7 +206,7 @@ class BusquedaAEstrella(Busqueda):
         solucion = False
         abiertos = []
         cerrados = dict()
-        abiertos.append(NodoAEstrella(inicial, None, None, 0, heuristica(inicial.cubo)))
+        abiertos.append(NodoAEstrella(inicial, None, None, 0, heuristica_manhattan(inicial.cubo)))
         cerrados[inicial.cubo.visualizar()] = inicial
 
         while not solucion and len(abiertos) > 0:
@@ -223,7 +223,7 @@ class BusquedaAEstrella(Busqueda):
                     hijo = actual.aplicarOperador(operador)
                     if hijo.cubo.visualizar() not in cerrados.keys():
                         sucesor_g = nodoActual.coste_g + 1
-                        sucesor_f = sucesor_g + heuristica(hijo.cubo)
+                        sucesor_f = sucesor_g + heuristica_manhattan(hijo.cubo)
 
                         nuevoNodoSucesor = NodoAEstrella(hijo, nodoActual, operador, sucesor_g, sucesor_f)
                         
@@ -241,19 +241,63 @@ class BusquedaAEstrella(Busqueda):
             return None
         
 
-class BusquedaIDA(Busqueda):
+
+class BusquedaAEstrella_comprueba_cara(Busqueda): # Implementa la búsqueda A* usando la heurística del nº de caras en la casilla correcta
     
     def buscarSolucion(self, inicial):
         nodoActual = None
         actual, hijo = None, None
         solucion = False
-        nueva_cota = heuristica(inicial.cubo)
+        abiertos = []
+        cerrados = dict()
+        abiertos.append(NodoAEstrella(inicial, None, None, 0, heuristica_comprueba_cara(inicial.cubo)))
+        cerrados[inicial.cubo.visualizar()] = inicial
+
+        while not solucion and len(abiertos) > 0:
+            # Ordenar la lista de abiertos según la heurística
+            abiertos.sort(key=lambda x: x.coste_f)
+            nodoActual = abiertos.pop(0)
+            actual = nodoActual.estado
+
+            if actual.esFinal():
+                solucion = True
+            
+            else:
+                for operador in actual.operadoresAplicables():
+                    hijo = actual.aplicarOperador(operador)
+                    if hijo.cubo.visualizar() not in cerrados.keys():
+                        sucesor_g = nodoActual.coste_g + 1
+                        sucesor_f = sucesor_g + heuristica_comprueba_cara(hijo.cubo)
+
+                        nuevoNodoSucesor = NodoAEstrella(hijo, nodoActual, operador, sucesor_g, sucesor_f)
+                        
+                        abiertos.append(nuevoNodoSucesor)
+                        cerrados[hijo.cubo.visualizar()] = hijo
+
+        if solucion:
+            lista = []
+            nodo = nodoActual
+            while nodo.padre is not None:  # Asciende hasta la raíz
+                lista.insert(0, nodo.operador)
+                nodo = nodo.padre
+            return lista
+        else:
+            return None
+        
+
+class BusquedaIDA_manhattan(Busqueda): # Implementa la búsqueda IDA* usando la heurística de Manhattan
+    
+    def buscarSolucion(self, inicial):
+        nodoActual = None
+        actual, hijo = None, None
+        solucion = False
+        nueva_cota = heuristica_manhattan(inicial.cubo)
 
         while not solucion:
             cota = nueva_cota
             nueva_cota = float('inf')
             abiertos = []
-            abiertos.append(NodoAEstrella(inicial, None, None, 0, heuristica(inicial.cubo)))
+            abiertos.append(NodoAEstrella(inicial, None, None, 0, heuristica_manhattan(inicial.cubo)))
 
             while not solucion and len(abiertos) > 0:
                 abiertos.sort(key=lambda x: x.coste_f)
@@ -266,7 +310,52 @@ class BusquedaIDA(Busqueda):
                     for operador in actual.operadoresAplicables():
                         hijo = actual.aplicarOperador(operador)
                         sucesor_g = nodoActual.coste_g + 1
-                        sucesor_f = sucesor_g + heuristica(hijo.cubo)
+                        sucesor_f = sucesor_g + heuristica_manhattan(hijo.cubo)
+                        
+                        if sucesor_f <= cota:
+                            nuevoNodoSucesor = NodoAEstrella(hijo, nodoActual, operador, sucesor_g, sucesor_f)
+                            abiertos.append(nuevoNodoSucesor)
+                        else:
+                            nueva_cota = min(nueva_cota, sucesor_f)
+
+        if solucion:
+            lista = []
+            nodo = nodoActual
+            while nodo.padre is not None:  # Asciende hasta la raíz
+                lista.insert(0, nodo.operador)
+                nodo = nodo.padre
+            return lista
+        else:
+            return None
+        
+
+
+class BusquedaIDA_comprueba_cara(Busqueda): # Implementa la búsqueda IDA* usando la heurística del nº de caras en la casilla correcta
+    
+    def buscarSolucion(self, inicial):
+        nodoActual = None
+        actual, hijo = None, None
+        solucion = False
+        nueva_cota = heuristica_comprueba_cara(inicial.cubo)
+
+        while not solucion:
+            cota = nueva_cota
+            nueva_cota = float('inf')
+            abiertos = []
+            abiertos.append(NodoAEstrella(inicial, None, None, 0, heuristica_comprueba_cara(inicial.cubo)))
+
+            while not solucion and len(abiertos) > 0:
+                abiertos.sort(key=lambda x: x.coste_f)
+                nodoActual = abiertos.pop(0)
+                actual = nodoActual.estado
+
+                if actual.esFinal():
+                    solucion = True
+                else:
+                    for operador in actual.operadoresAplicables():
+                        hijo = actual.aplicarOperador(operador)
+                        sucesor_g = nodoActual.coste_g + 1
+                        sucesor_f = sucesor_g + heuristica_comprueba_cara(hijo.cubo)
                         
                         if sucesor_f <= cota:
                             nuevoNodoSucesor = NodoAEstrella(hijo, nodoActual, operador, sucesor_g, sucesor_f)

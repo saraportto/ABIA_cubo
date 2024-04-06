@@ -8,7 +8,7 @@ cara_opuesta = {
     }
 
 
-def heuristica(cubo) -> int:
+def heuristica_manhattan(cubo) -> int:
     distancia = 0
 
     for num_cara, cara in enumerate(cubo.caras):
@@ -35,13 +35,13 @@ def calc_distancia(casilla, pos_actual) -> int:
     return dist_cara + dist_color  # Devuelve la distancia calculada
 
 
-def heuristica_simple(cubo) -> int:
-    distancia = 0
+def heuristica_comprueba_cara(cubo) -> int:
+    casilla_en_cara = 0
 
     for num_cara, cara in enumerate(cubo.caras):
         for num_casilla, casilla in enumerate(cara.casillas):
             if num_casilla != 8:
                 if num_cara != casilla.color:
-                    distancia += 1  # Solo tiene en cuenta la cara porque es muy optimista
+                    casilla_en_cara += 1  # Solo tiene en cuenta la cara porque es muy optimista
 
-    return distancia  # Devuelve la distancia total calculada
+    return casilla_en_cara  # Devuelve el nº de casillas que están en la cara correcta
