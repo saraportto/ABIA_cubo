@@ -13,7 +13,6 @@ class Cara:
         for i in range(0, 9):
             self.casillas.append(Casilla(color, i))
 
-
     def equal(self, cara):
         for i,c in enumerate(cara):
             if c.color != self.casillas[i].color:
@@ -28,9 +27,6 @@ class Casilla:
     def __init__(self, color, pos):
         self.color=color
         self.posicionCorrecta=pos
-        self.posicionAbsCorrecta = (0, 0)
-
-
 
     def equal(self,casilla):
         if self.color != casilla.color or self.posicionCorrecta != casilla.posicionCorrecta: return False
