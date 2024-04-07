@@ -20,7 +20,14 @@ def heuristica_manhattan(cubo) -> int:
 
 def calc_distancia(casilla, pos_actual) -> int:
     if pos_actual[1] != casilla.posicionCorrecta and pos_actual[1] != 8:
-        dist_cara = 2  # Si la posición actual no es la correcta
+        if pos_actual[1] % 2 == 0:  # Si la posición actual es esquina
+            if abs(pos_actual[1] - casilla.posicionCorrecta) == 4:  # Si la posición actual es la opuesta a la correcta
+                dist_cara = 4
+            else:
+                dist_cara = 2
+        else:
+            dist_cara = 2  # Si la posición actual es arista
+
     else:
         dist_cara = 0  # Si la posición actual es la correcta o el centro
 
@@ -30,7 +37,7 @@ def calc_distancia(casilla, pos_actual) -> int:
         else:
             dist_color = 3  # Si el color actual no es el correcto ni el opuesto
     else:
-        dist_color = 0
+        dist_color = 0  # Si el color actual es el correcto
 
     return dist_cara + dist_color  # Devuelve la distancia calculada
 

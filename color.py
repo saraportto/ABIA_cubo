@@ -4,5 +4,5 @@ class Color:
     GREEN = '\033[32m'
     YELLOW = '\033[33m'
     BLUE = '\033[34m'
-    ORANGE = '\033[38;5;208m'  # Representando el color naranja
+    ORANGE = '\033[38;5;208m'
     WHITE = '\033[37m'

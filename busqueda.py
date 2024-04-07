@@ -1,5 +1,5 @@
 from nodos import *
-from heurísticas import *
+from heuristicas import *
 
 from abc import abstractmethod
 from abc import ABCMeta
