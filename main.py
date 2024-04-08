@@ -33,7 +33,7 @@ print("CUBO INICIAL (MEZCLADO):\n" + cubo.visualizar())
 # problema = Problema(EstadoRubik(cubo), BusquedaProfundidad())
 # problema = Problema(EstadoRubik(cubo), BusquedaProfundidadIterativa())
 
-problema = Problema(EstadoRubik(cubo), BusquedaVoraz_manhattan())
+# problema = Problema(EstadoRubik(cubo), BusquedaVoraz_manhattan())
 # problema = Problema(EstadoRubik(cubo), BusquedaAEstrella_manhattan())
 # problema = Problema(EstadoRubik(cubo), BusquedaIDA_manhattan())
 
